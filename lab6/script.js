@@ -81,7 +81,7 @@ function validateForm() {
 function submitForm(event) {
     event.preventDefault();
 
-    const formData = new FormData();
+    const formData = new FormData(form);
     if (order.soup) formData.append('soup', order.soup.keyword);
     if (order.main) formData.append('main', order.main.keyword);
     if (order.drink) formData.append('drink', order.drink.keyword);

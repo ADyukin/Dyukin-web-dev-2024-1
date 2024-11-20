@@ -125,46 +125,11 @@ function handleAddButtonClick(event) {
     updateOrderDisplay();
 }
 
-function submitForm(event) {
-    event.preventDefault();
-
-    const form = document.querySelector('.form');
-    const formData = new FormData(form);
-
-    if (order.soup) formData.append('soup', order.soup.keyword);
-
-    if (order.main) formData.append('main', order.main.keyword);
-
-    if (order.drink) formData.append('drink', order.drink.keyword);
-
-    if (order.salad) formData.append('salad', order.salad.keyword);
-
-    if (order.dessert) formData.append('dessert', order.dessert.keyword);
-
-    formData.append('totalCost', `${order.totalCost}₽`);
-
-    fetch('https://httpbin.org/post', {
-        method: 'POST',
-        body: formData
-    })
-        .then(response => response.json())
-        .then(data => {
-            const newWindow = window.open('', '_blank');
-            newWindow.document.write(
-                '<pre>' + JSON.stringify(data, null, 2) + '</pre>'
-            );
-            newWindow.document.close();
-        })
-        .catch(error => {
-            console.error('Ошибка:', error);
-            alert('Произошла ошибка при отправке заказа.');
-        });
-}
-
 function toggleActiveButton(button) {
-    const buttons = button.parentElement.querySelectorAll("button");
-    buttons.forEach(btn => btn.classList.remove("active"));
-    button.classList.add("active");
+    const section = button.closest(".filters");
+    const buttons = section.querySelectorAll("button"); 
+    buttons.forEach(btn => btn.classList.remove("active")); 
+    button.classList.add("active");     
 }
 
 function filterDishes(category, kind) {
