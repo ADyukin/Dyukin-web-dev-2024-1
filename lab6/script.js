@@ -15,18 +15,22 @@ function checkOrder() {
     const isComboValid = Object.values(comboRequirements).some(combo => {
         const missingDishes = combo
             .filter(dish => !selectedDishes.includes(dish));
-        if (missingDishes.length === combo.length) {
-            missing = missingDishes;
+        if (missingDishes.length === 0) {
+            return true;
         }
-        return missingDishes.length === 0;
+        return false;
     });
 
     if (!isComboValid) {
         missing = Object.values(comboRequirements)
             .map(combo => combo.filter(dish => !selectedDishes.includes(dish)))
-            .find(missingDishes => missingDishes.length > 0) || [];
+            .reduce((shortest, current) => 
+                current.length < shortest.length ? current : shortest, 
+                Object.values(comboRequirements)[0]
+            );
     }
 
+    console.log(missing);
     return { isComboValid, missing, selectedDishes };
 }
 
@@ -53,21 +57,17 @@ function validateForm() {
     const { isComboValid, missing, selectedDishes } = checkOrder();
 
     if (!isComboValid) {
-        let message;
-
         if (selectedDishes.length === 0) {
             message = 'Ничего не выбрано. Выберите блюда для заказа';
-        } else if (missing.includes('drink')) {
+        } else if (missing.includes('drink') && missing.length===1) {
             message = 'Выберите напиток';
-        } else if (selectedDishes.includes('soup') && (missing.includes('main')
-            || missing.includes('salad'))) {
+        } else if (selectedDishes.includes('soup') && (missing.includes('main') || missing.includes('salad'))) {
             message = 'Выберите главное блюдо/салат/стартер';
-        } else if (selectedDishes.includes('salad')
-            && (missing.includes('soup') || missing.includes('main'))) {
+        } else if (selectedDishes.includes('salad') && (missing.includes('soup') || missing.includes('main'))) {
             message = 'Выберите суп или главное блюдо';
-        } else if ((selectedDishes.includes('drink') ||
-            selectedDishes.includes('dessert'))
-            && !selectedDishes.includes('main')) {
+        } else if (selectedDishes.includes('dessert') && !selectedDishes.includes('main')) {
+            message = 'Выберите главное блюдо';
+        } else if ((selectedDishes.includes('drink') || selectedDishes.includes('dessert')) && !selectedDishes.includes('main')) {
             message = 'Выберите главное блюдо';
         }
 
