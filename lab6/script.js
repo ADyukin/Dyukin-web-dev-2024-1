@@ -26,7 +26,7 @@ function checkOrder() {
             .map(combo => combo.filter(dish => !selectedDishes.includes(dish)))
             .reduce((shortest, current) => 
                 current.length < shortest.length ? current : shortest, 
-                Object.values(comboRequirements)[0]
+            Object.values(comboRequirements)[0]
             );
     }
 
@@ -59,18 +59,17 @@ function validateForm() {
     if (!isComboValid) {
         if (selectedDishes.length === 0) {
             message = 'Ничего не выбрано. Выберите блюда для заказа';
-        } else if (missing.includes('drink') && missing.length===1) {
+        } else if (missing.includes('drink') && missing.length === 1) {
             message = 'Выберите напиток';
-        } else if (selectedDishes.includes('soup') && (missing.includes('main') || missing.includes('salad'))) {
+        } else if (selectedDishes.includes('soup')
+            && (missing.includes('main') || missing.includes('salad'))) {
             message = 'Выберите главное блюдо/салат/стартер';
-        } else if (selectedDishes.includes('salad') && (missing.includes('soup') || missing.includes('main'))) {
+        } else if (selectedDishes.includes('salad')
+            && (missing.includes('soup') || missing.includes('main'))) {
             message = 'Выберите суп или главное блюдо';
-        } else if (selectedDishes.includes('dessert') && !selectedDishes.includes('main')) {
-            message = 'Выберите главное блюдо';
-        } else if ((selectedDishes.includes('drink') || selectedDishes.includes('dessert')) && !selectedDishes.includes('main')) {
+        } else {
             message = 'Выберите главное блюдо';
         }
-
         showNotification(message);
         return false; 
     }
