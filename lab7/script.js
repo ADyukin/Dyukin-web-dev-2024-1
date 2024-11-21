@@ -1,9 +1,9 @@
 const comboRequirements = {
-    combo1: ['soup', 'main-course', 'salad', 'drink'],
-    combo2: ['soup', 'main-course', 'drink'],
+    combo1: ['soup', 'main', 'salad', 'drink'],
+    combo2: ['soup', 'main', 'drink'],
     combo3: ['soup', 'salad', 'drink'],
-    combo4: ['main-course', 'salad', 'drink'],
-    combo5: ['main-course', 'drink'],
+    combo4: ['main', 'salad', 'drink'],
+    combo5: ['main', 'drink'],
 };
 
 
@@ -15,18 +15,22 @@ function checkOrder() {
     const isComboValid = Object.values(comboRequirements).some(combo => {
         const missingDishes = combo
             .filter(dish => !selectedDishes.includes(dish));
-        if (missingDishes.length === combo.length) {
-            missing = missingDishes;
+        if (missingDishes.length === 0) {
+            return true;
         }
-        return missingDishes.length === 0;
+        return false;
     });
 
     if (!isComboValid) {
         missing = Object.values(comboRequirements)
             .map(combo => combo.filter(dish => !selectedDishes.includes(dish)))
-            .find(missingDishes => missingDishes.length > 0) || [];
+            .reduce((shortest, current) => 
+                current.length < shortest.length ? current : shortest, 
+            Object.values(comboRequirements)[0]
+            );
     }
 
+    console.log(missing);
     return { isComboValid, missing, selectedDishes };
 }
 
@@ -53,25 +57,19 @@ function validateForm() {
     const { isComboValid, missing, selectedDishes } = checkOrder();
 
     if (!isComboValid) {
-        let message;
-
         if (selectedDishes.length === 0) {
             message = 'Ничего не выбрано. Выберите блюда для заказа';
-        } else if (missing.includes('drink')) {
+        } else if (missing.includes('drink') && missing.length === 1) {
             message = 'Выберите напиток';
         } else if (selectedDishes.includes('soup')
-            && (missing.includes('main-course')
-            || missing.includes('salad'))) {
+            && (missing.includes('main') || missing.includes('salad'))) {
             message = 'Выберите главное блюдо/салат/стартер';
         } else if (selectedDishes.includes('salad')
-            && (missing.includes('soup') || missing.includes('main-course'))) {
+            && (missing.includes('soup') || missing.includes('main'))) {
             message = 'Выберите суп или главное блюдо';
-        } else if ((selectedDishes.includes('drink') ||
-            selectedDishes.includes('dessert'))
-            && !selectedDishes.includes('main-course')) {
+        } else {
             message = 'Выберите главное блюдо';
         }
-
         showNotification(message);
         return false; 
     }
@@ -84,7 +82,7 @@ function submitForm(event) {
 
     const formData = new FormData(form);
     if (order.soup) formData.append('soup', order.soup.keyword);
-    if (order.main) formData.append('main-course', order.main.keyword);
+    if (order.main) formData.append('main', order.main.keyword);
     if (order.drink) formData.append('drink', order.drink.keyword);
     if (order.salad) formData.append('salad', order.salad.keyword);
     if (order.dessert) formData.append('dessert', order.dessert.keyword);

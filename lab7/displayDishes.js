@@ -1,7 +1,7 @@
 'use strict';
 
-function displayDishes(dishes) {
-    const categories = ["soup", "main-course", "drink", "salad", "dessert"];
+function displayDishes() {
+    const categories = ["soup", "main", "drink", "salad", "dessert"];
 
     categories.forEach(category => {
         const dishesContainer = document.querySelector(`.${category}-dishes`);
@@ -29,37 +29,4 @@ function displayDishes(dishes) {
     });
 }
 
-function setupButtonListeners() {
-    const dishesContainer = document.querySelectorAll('.dishes');
-
-    dishesContainer.forEach(container => {
-        container.querySelectorAll('button').forEach(button => {
-            button.addEventListener("click", handleAddButtonClick);
-        });
-    });
-
-    updateOrderDisplay();
-}
-
-async function loadDishes() {
-    const apiUrl = 'https://edu.std-900.ist.mospolytech.ru/labs/api/dishes';
-
-    try {
-        const response = await fetch(apiUrl);
-        if (!response.ok) {
-            throw new Error(`Ошибка загрузки данных: ${response.statusText}`);
-        }
-
-        const dishes = await response.json();
-
-        displayDishes(dishes);
-
-        // Вызов установки обработчиков после рендеринга карточек
-        setupButtonListeners();
-    } catch (error) {
-        alert("Не удалось загрузить блюда. Проверьте подключение к серверу.");
-    }
-}
-
-// Основной скрипт
-document.addEventListener("DOMContentLoaded", loadDishes);
+document.addEventListener("DOMContentLoaded", displayDishes);

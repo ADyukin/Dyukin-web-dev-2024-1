@@ -2,7 +2,7 @@
 
 const order = {
     soup: null,
-    'main-course': null,
+    main: null,
     drink: null,
     salad: null,
     dessert: null,
@@ -32,7 +32,7 @@ function updateOrderDisplay() {
 
     if (
         !order.soup &&
-        !order['main-course'] &&
+        !order.main &&
         !order.drink &&
         !order.salad &&
         !order.dessert
@@ -45,7 +45,7 @@ function updateOrderDisplay() {
 
             const dish = order[category];
             const categoryTitle = category === 'soup' ? "Суп" :
-                category === 'main-course' ? "Главное блюдо" :
+                category === 'main' ? "Главное блюдо" :
                     category === 'drink' ? "Напиток" :
                         category === 'salad' ? "Салат" : "Десерт";
             const displayText = dish ? `${dish.name} ${dish.price}` : 
@@ -92,7 +92,7 @@ function handleAddButtonClick(event) {
     if (sectionTitle.includes('суп')) {
         category = 'soup';
     } else if (sectionTitle.includes('главное блюдо')) {
-        category = 'main-course';
+        category = 'main';
     } else if (sectionTitle.includes('напиток')) {
         category = 'drink';
     } else if (sectionTitle.includes('салат')) {
@@ -126,9 +126,10 @@ function handleAddButtonClick(event) {
 }
 
 function toggleActiveButton(button) {
-    const buttons = button.parentElement.querySelectorAll("button");
-    buttons.forEach(btn => btn.classList.remove("active"));
-    button.classList.add("active");
+    const section = button.closest(".filters");
+    const buttons = section.querySelectorAll("button"); 
+    buttons.forEach(btn => btn.classList.remove("active")); 
+    button.classList.add("active");     
 }
 
 function filterDishes(category, kind) {
